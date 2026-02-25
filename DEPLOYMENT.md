@@ -343,6 +343,21 @@ npm install -D @cloudflare/next-on-pages wrangler
 npm install -g wrangler
 ```
 
+> ⚠️ **Important**: Cloudflare Pages otomatis mendeteksi `bun` dan menjalankan
+> `bun install --frozen-lockfile`. Karena proyek ini menggunakan **npm** dan
+> `package-lock.json`, bun akan mengeluh jika lockfile tidak sinkron
+> (`lockfile had changes, but lockfile is frozen`). Untuk menghindari error
+> tersebut, _override install command_ pada konfigurasi Pages:
+>
+> - buka dashboard Pages → project Anda → **Settings → Build & Deploy**
+> - set **Install Command** menjadi `npm ci` atau `npm install`
+> - set **Build Command** menjadi `npm run build:cf` (sesuai skrip tadi)
+>
+> Dengan begitu, proses build akan memakai npm/ci alih‑alih bun dan masalah
+> "frozen lockfile" akan hilang.
+
+
+
 2. **Login ke Cloudflare**
 
 ```bash

@@ -326,6 +326,95 @@ flyctl certs create yourdomain.com
 
 ---
 
+## Deployment ke Cloudflare Pages
+
+### Pilihan Gratis yang ``lebih manusiawi``
+
+Cloudflare Pages memberikan hosting **free tier** untuk aplikasi Next.js. 
+Strategi yang disarankan adalah menggunakan adapter `@cloudflare/next-on-pages`
+agar API route dan sisi server dijalankan via Cloudflare Workers (Edge runtime).
+
+### Langkah-Langkah
+
+1. **Install tool dan dependensi**
+
+```bash
+npm install -D @cloudflare/next-on-pages wrangler
+npm install -g wrangler
+```
+
+2. **Login ke Cloudflare**
+
+```bash
+wrangler login
+# atau gunakan `wrangler config` dan masukkan API token dengan scope Pages
+```
+
+3. **Siapkan `wrangler.toml`**
+
+Letakkan di root proyek:
+
+```toml
+name = "rikosan"
+main = "./.next/standalone/worker.js"  # auto-built nanti
+compatibility_date = "2025-01-01"
+type = "javascript"
+
+[build]
+command = "npm run build && npx @cloudflare/next-on-pages build"
+[build.upload]
+format = "service-worker"
+```
+
+> _Catatan_: adapter `next-on-pages` akan membuat file `worker.js`
+> yang mengemas seluruh aplikasi Next.js menjadi Cloudflare Worker.
+
+4. **Update script di `package.json`**
+
+Tambahkan:
+
+```json
+"scripts": {
+  "build": "next build",
+  "build:cf": "npm run build && npx @cloudflare/next-on-pages build",
+  "deploy:cf": "wrangler deploy --env production"
+}
+```
+
+5. **Set environment variables via `wrangler`**
+
+```bash
+wrangler secret put TURSO_DATABASE_URL
+wrangler secret put TURSO_AUTH_TOKEN
+wrangler secret put NEXTAUTH_SECRET
+# Atau melalui dashboard Pages > Settings > Environment Variables
+```
+
+6. **Deploy**
+
+```bash
+npm run build:cf
+wrangler deploy
+# URL: https://rikosan.pages.dev (default) atau custom domain
+```
+
+7. **Custom Domain (Opsional)**
+
+- Di dashboard Cloudflare Pages, tambahkan domain
+- Ikuti instruksi DNS (A/AAAA record ke Pages atau Cloudflare proxy)
+
+### Tips & Catatan
+
+- **Turso** tetap sebagai database production; connection string
+  disimpan sebagai secret.
+- Cloudflare Workers memiliki batas ukuran bundle (~1 MB).
+  Jika build melebihi, aktifkan `zone_id` dan `analytics_engine` 
+  atau gunakan Workers Unbound (biaya minim).
+- Anda juga bisa men-deploy ke **Cloudflare Workers** secara manual
+  menggunakan `wrangler deploy --name rikosan-worker`.
+
+---
+
 ## Testing & Verification
 
 ### 1. Test Landing Page

@@ -6,6 +6,8 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "NODE_ENV=production node .next/standalone/server.js",
+    "build:cf": "npm run build && npx @cloudflare/next-on-pages build",
+    "deploy:cf": "wrangler deploy --env production",
     "postbuild": "cp -r .next/static .next/standalone/.next/static || true && cp -r public .next/standalone/public || true",
     "lint": "eslint .",
     "db:push": "prisma db push",
@@ -87,6 +89,8 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.2.0",
+    "wrangler": "^3.4.0",
     "@tailwindcss/postcss": "^4",
     "@types/react": "^19",
     "@types/react-dom": "^19",

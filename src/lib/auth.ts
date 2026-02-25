@@ -26,7 +26,7 @@ export async function encrypt(payload: SessionUser) {
 export async function decrypt(token: string): Promise<SessionUser | null> {
   try {
     const { payload } = await jwtVerify(token, key)
-    return payload as SessionUser
+    return payload as unknown as SessionUser
   } catch {
     return null
   }

@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# Ensure standalone env is not committed
+.next/standalone/.env
+
 # vercel
 .vercel
 

@@ -149,11 +149,11 @@ async function main() {
 
   // Create 5 Sessions per Class (Sesi 1-5)
   const sessionTimes = [
-    { name: 'Sesi 1', time: '08:00 - 09:30' },
-    { name: 'Sesi 2', time: '09:45 - 11:15' },
-    { name: 'Sesi 3', time: '13:00 - 14:30' },
-    { name: 'Sesi 4', time: '14:45 - 16:15' },
-    { name: 'Sesi 5', time: '16:30 - 18:00' },
+    { name: 'Sesi 1', time: '10:00 - 11:30' },
+    { name: 'Sesi 2', time: '11:30 - 13:00' },
+    { name: 'Sesi 3', time: '13:30 - 15:00' },
+    { name: 'Sesi 4', time: '15:00 - 16:30' },
+    { name: 'Sesi 5', time: '17:00 - 19:30' },
   ]
 
   let sessionCount = 0

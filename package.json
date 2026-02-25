@@ -6,6 +6,7 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "NODE_ENV=production node .next/standalone/server.js",
+    "postbuild": "cp -r .next/static .next/standalone/.next/static || true && cp -r public .next/standalone/public || true",
     "lint": "eslint .",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
@@ -80,6 +81,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
+    "xlsx": "^0.18.5",
     "z-ai-web-dev-sdk": "^0.0.16",
     "zod": "^4.0.2",
     "zustand": "^5.0.6"

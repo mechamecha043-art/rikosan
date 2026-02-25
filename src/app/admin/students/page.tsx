@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { format } from 'date-fns'
+import { AddStudentForm } from '@/components/AddStudentForm'
 
 interface ClassData {
   id: string
@@ -438,125 +439,20 @@ export default function StudentsPage() {
         </CardContent>
       </Card>
 
-      {/* Add Student Modal */}
-      <AnimatePresence>
-        {showAddModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-            onClick={() => setShowAddModal(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-xl w-full max-w-md p-5"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-[#ff8c00]" />
-                Tambah Siswa Baru
-              </h2>
-              
-              {formError && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-600 text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  {formError}
-                </div>
-              )}
-
-              <div className="space-y-4">
-                {/* Student ID */}
-                <div>
-                  <Label className="text-sm font-medium">ID Siswa (Unik) *</Label>
-                  <Input
-                    value={newStudentId}
-                    onChange={(e) => setNewStudentId(e.target.value.toUpperCase())}
-                    placeholder="Contoh: S001, A001, dll"
-                    className="h-10 mt-1"
-                    maxLength={10}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">ID unik untuk mengidentifikasi siswa</p>
-                </div>
-
-                {/* Student Name */}
-                <div>
-                  <Label className="text-sm font-medium">Nama Siswa *</Label>
-                  <Input
-                    value={newStudentName}
-                    onChange={(e) => setNewStudentName(e.target.value)}
-                    placeholder="Nama lengkap siswa"
-                    className="h-10 mt-1"
-                  />
-                </div>
-
-                {/* Class Selection */}
-                <div>
-                  <Label className="text-sm font-medium">Kelas *</Label>
-                  <select
-                    value={newStudentClass}
-                    onChange={(e) => {
-                      setNewStudentClass(e.target.value)
-                      setNewStudentSession('') // Reset session when class changes
-                    }}
-                    className="w-full h-10 px-3 border rounded-lg text-sm mt-1"
-                  >
-                    <option value="">Pilih Kelas...</option>
-                    {classes.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Session Selection */}
-                <div>
-                  <Label className="text-sm font-medium">Sesi (Opsional)</Label>
-                  <select
-                    value={newStudentSession}
-                    onChange={(e) => setNewStudentSession(e.target.value)}
-                    className="w-full h-10 px-3 border rounded-lg text-sm mt-1"
-                    disabled={!newStudentClass}
-                  >
-                    <option value="">Pilih Sesi...</option>
-                    {getSessionsForClass(newStudentClass).map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name} {s.time ? `(${s.time})` : ''}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    variant="outline"
-                    className="flex-1 h-10"
-                    onClick={() => {
-                      setShowAddModal(false)
-                      resetAddForm()
-                    }}
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    className="flex-1 h-10 bg-gradient-to-r from-[#ff8c00] to-[#ffc107] hover:from-[#e67e00] hover:to-[#e6ad00]"
-                    onClick={handleAddStudent}
-                    disabled={addingStudent}
-                  >
-                    {addingStudent ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Save className="w-4 h-4 mr-1" />
-                    )}
-                    Simpan
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Add Student Form */}
+      <AddStudentForm
+        open={showAddModal}
+        onOpenChange={setShowAddModal}
+        onSuccess={fetchData}
+        classes={classes}
+        sessions={
+          selectedClass?.sessions.flatMap(session => ({
+            id: session.id,
+            name: session.name,
+            time: session.time,
+          })) || []
+        }
+      />
 
       {/* Edit Student Modal */}
       <AnimatePresence>

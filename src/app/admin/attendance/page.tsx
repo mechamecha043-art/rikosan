@@ -15,12 +15,14 @@ import {
   Search,
   User,
   Clock,
+  BarChart3,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { format, addDays, subDays } from 'date-fns'
 import { id } from 'date-fns/locale/id'
+import { AttendanceSummaryView } from '@/components/AttendanceSummaryView'
 
 interface ClassData {
   id: string
@@ -46,6 +48,7 @@ interface User {
 }
 
 export default function AttendancePage() {
+  const [tab, setTab] = useState<'daily' | 'summary'>('daily')
   const [classes, setClasses] = useState<ClassData[]>([])
   const [user, setUser] = useState<User | null>(null)
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null)
@@ -251,6 +254,37 @@ export default function AttendancePage() {
         <p className="text-gray-500 text-sm mt-1">Catat kehadiran siswa berdasarkan data yang tersedia di database</p>
       </div>
 
+      {/* Tab Navigation */}
+      <div className="flex gap-2 border-b border-gray-200">
+        <button
+          onClick={() => setTab('daily')}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition ${
+            tab === 'daily'
+              ? 'border-orange-500 text-orange-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <Calendar className="inline w-4 h-4 mr-2" />
+          Absensi Harian
+        </button>
+        <button
+          onClick={() => setTab('summary')}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition ${
+            tab === 'summary'
+              ? 'border-orange-500 text-orange-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <BarChart3 className="inline w-4 h-4 mr-2" />
+          Laporan Bulanan
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {tab === 'summary' ? (
+        <AttendanceSummaryView classes={classes} />
+      ) : (
+        <>
       {/* Teacher Info Card */}
       {user && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-3">
@@ -520,6 +554,8 @@ export default function AttendancePage() {
           Absensi akan mencatat guru yang melakukan input.
         </p>
       </div>
+        </>
+      )}
     </div>
   )
 }
